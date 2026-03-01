@@ -1,0 +1,56 @@
+# ============================================================================
+# FILE: .github/workflows/sync-upstream.yml
+# REPO: git@github.com:Private-Infra/nvim-config.git
+#
+# PURPOSE: Weekly auto-sync from upstream AstroNvim/template into this fork.
+#
+# HOW TO USE:
+#   1. Copy this file to Private-Infra/nvim-config/.github/workflows/sync-upstream.yml
+#   2. The workflow will run automatically every Sunday at 06:00 UTC
+#   3. You can also trigger it manually from the Actions tab
+#
+# IMPORTANT: After an auto-merge, bump astro_nvim_config_version in
+#   ansible-home/roles/system/astro_nvim/defaults/main.yml
+#   to the new commit SHA to deploy the update to your machines.
+# ============================================================================
+
+name: Weekly upstream sync
+
+on:
+  schedule:
+    - cron: "0 6 * * 0"   # Every Sunday at 06:00 UTC
+  workflow_dispatch:       # Allow manual trigger from GitHub Actions UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/AstroNvim/template.git || true
+          git fetch upstream main
+
+      - name: Merge upstream changes
+        run: |
+          git merge upstream/main \
+            --no-edit \
+            --allow-unrelated-histories \
+            -m "chore: sync from upstream AstroNvim/template $(date +%Y-%m-%d)" \
+            || echo "Merge conflict or already up to date"
+
+      - name: Push to fork
+        run: git push origin main
