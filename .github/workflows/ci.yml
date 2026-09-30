@@ -1,0 +1,40 @@
+---
+# Test de démarrage à chaque push et PR : la config se charge avec les
+# plugins du lazy-lock.json, reconnaît les types de fichiers de la stack et
+# n'affiche aucune erreur (scripts/smoke-test.lua).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # Même version que les postes : astro_nvim_neovim_version, dans
+  # ansible-home (roles/system/astro_nvim/defaults/main.yml).
+  NVIM_VERSION: "0.12.5"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Installer Neovim
+        run: |
+          curl -sSL "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-linux-x86_64.tar.gz" \
+            | sudo tar xz -C /opt
+          echo "/opt/nvim-linux-x86_64/bin" >> "$GITHUB_PATH"
+
+      - name: Config en place
+        run: mkdir -p ~/.config && ln -s "$GITHUB_WORKSPACE" ~/.config/nvim
+
+      - name: Plugins du lazy-lock.json
+        run: nvim --headless "+Lazy! restore" +qa
+
+      - name: Test de démarrage
+        run: nvim --headless -S scripts/smoke-test.lua
