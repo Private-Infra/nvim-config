@@ -19,8 +19,8 @@ déployée dans `~/.config/nvim` sur les postes par ansible-home (rôle
 - **Thème** : clair ou sombre selon `theme dark|light` du terminal, relu au
   retour du focus.
 - **Presse-papier** par OSC 52 sous WSL et en SSH.
-- **Obsidian** : `obsidian.nvim` sur le coffre de `OBSIDIAN_VAULT`, à définir
-  dans `~/.config/zsh/local.zsh` du poste.
+- **Obsidian** : `obsidian.nvim` sur le coffre de `OBSIDIAN_VAULT`, défini
+  par ansible-home (`obsidian_vault_path`) sur les postes WSL et le Mac.
 
 ## Mises à jour
 

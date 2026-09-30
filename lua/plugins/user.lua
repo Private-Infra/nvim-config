@@ -1,7 +1,7 @@
 -- Réglages propres à cette config, par-dessus les packs de community.lua.
 
--- Coffre Obsidian : chemin dans OBSIDIAN_VAULT (~/.config/zsh/local.zsh du
--- poste). Sans lui, obsidian.nvim ne se charge pas.
+-- Coffre Obsidian : chemin dans OBSIDIAN_VAULT, défini par ansible-home
+-- (obsidian_vault_path). Sans lui, obsidian.nvim ne se charge pas.
 local coffre = vim.env.OBSIDIAN_VAULT and vim.fn.expand(vim.env.OBSIDIAN_VAULT)
 
 ---@type LazySpec
