@@ -2,7 +2,8 @@
 -- la stack sans erreur. Lancé par la CI (et à la main) :
 --   nvim --headless -S scripts/smoke-test.lua
 -- Code de sortie 1 si un message d'erreur apparaît, si un type attendu
--- n'est pas reconnu ou si les images du Markdown sont coupées.
+-- n'est pas reconnu, si les images du Markdown sont coupées ou si les
+-- numéros de ligne sont relatifs.
 
 local attendus = {
   ["roles/web/tasks/main.yml"] = "ansible",
@@ -34,6 +35,7 @@ vim.defer_fn(function()
   if not (image.doc and image.doc.enabled) then
     table.insert(erreurs, "snacks : image.doc désactivé, Mermaid et formules ne s'affichent pas dans le Markdown")
   end
+  if vim.wo.relativenumber then table.insert(erreurs, "options : numéros relatifs, absolus attendus") end
   local messages = vim.api.nvim_exec2("messages", { output = true }).output
   for ligne in messages:gmatch "[^\n]+" do
     if ligne:match "E%d+:" or ligne:match "[Ee]rror" then table.insert(erreurs, "message : " .. ligne) end
