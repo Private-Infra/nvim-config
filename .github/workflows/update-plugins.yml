@@ -1,0 +1,53 @@
+---
+# Mise à jour hebdomadaire des plugins : `Lazy update`, test de démarrage,
+# puis commit du lazy-lock.json sur main. Les postes l'appliquent tout seuls
+# au déploiement suivant (ansible-home, rôle astro_nvim : `Lazy restore`).
+# Un test en échec bloque le commit : les postes gardent l'ancien lockfile.
+name: Mise à jour des plugins
+
+on:
+  schedule:
+    - cron: "17 5 * * 1" # lundi 05:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  NVIM_VERSION: "0.12.5" # aligné sur astro_nvim_neovim_version (ansible-home)
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Installer Neovim
+        run: |
+          curl -sSL "https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-linux-x86_64.tar.gz" \
+            | sudo tar xz -C /opt
+          echo "/opt/nvim-linux-x86_64/bin" >> "$GITHUB_PATH"
+
+      - name: Config en place
+        run: mkdir -p ~/.config && ln -s "$GITHUB_WORKSPACE" ~/.config/nvim
+
+      - name: Mettre à jour les plugins
+        run: nvim --headless "+Lazy! update" +qa
+
+      - name: Parsers et outils Mason des nouvelles versions
+        run: nvim --headless -S scripts/install.lua
+
+      - name: Test de démarrage avec les nouvelles versions
+        run: nvim --headless -S scripts/smoke-test.lua
+
+      - name: Committer le lockfile
+        run: |
+          if git diff --quiet -- lazy-lock.json; then
+            echo "Aucun plugin à mettre à jour."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lazy-lock.json
+          git commit -m "chore(plugins): mise à jour hebdomadaire du lazy-lock.json"
+          git push

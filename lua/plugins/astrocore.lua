@@ -1,69 +1,62 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
--- AstroCore provides a central place to modify mappings, vim options, autocommands, and more!
--- Configuration documentation can be found with `:h astrocore`
--- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
---       as this provides autocomplete and documentation while editing
+-- Options, types de fichiers et raccourcis de base (`:h astrocore`).
 
 ---@type LazySpec
 return {
   "AstroNvim/astrocore",
   ---@type AstroCoreOpts
   opts = {
-    -- Configure core features of AstroNvim
     features = {
-      large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
-      autopairs = true, -- enable autopairs at start
-      cmp = true, -- enable completion at start
-      diagnostics = { virtual_text = true, virtual_lines = false }, -- diagnostic settings on startup
-      highlighturl = true, -- highlight URLs at start
-      notifications = true, -- enable notifications at start
+      large_buf = { size = 1024 * 256, lines = 10000 },
+      autopairs = true,
+      cmp = true,
+      diagnostics = { virtual_text = true, virtual_lines = false },
+      highlighturl = true,
+      notifications = true,
     },
-    -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
       virtual_text = true,
       underline = true,
     },
-    -- passed to `vim.filetype.add`
-    filetypes = {
-      -- see `:h vim.filetype.add` for usage
-      extension = {
-        foo = "fooscript",
-      },
-      filename = {
-        [".foorc"] = "fooscript",
-      },
-      pattern = {
-        [".*/etc/foo/.*"] = "fooscript",
-      },
-    },
-    -- vim options can be configured here
     options = {
-      opt = { -- vim.opt.<key>
-        relativenumber = true, -- sets vim.opt.relativenumber
-        number = true, -- sets vim.opt.number
-        spell = false, -- sets vim.opt.spell
-        signcolumn = "yes", -- sets vim.opt.signcolumn to yes
-        wrap = false, -- sets vim.opt.wrap
+      opt = {
+        relativenumber = true,
+        number = true,
+        spell = false,
+        spelllang = { "fr", "en" },
+        signcolumn = "yes",
+        wrap = false,
+        scrolloff = 8,
+        undofile = true,
       },
-      g = { -- vim.g.<key>
-        -- configure global vim variables (vim.g)
-        -- NOTE: `mapleader` and `maplocalleader` must be set in the AstroNvim opts or before `lazy.setup`
-        -- This can be found in the `lua/lazy_setup.lua` file
+      g = {
+        -- Templates Jinja d'Ansible : ansible-vim (pack ansible) les passe en
+        -- jinja2 ; avec cette table, en type composé (`sh.jinja2`) qui garde
+        -- la coloration et le LSP du fichier rendu. Clés : regex « very
+        -- magic » testées après un « / » du chemin, donc exclusives entre
+        -- elles (l'ordre de la table n'est pas garanti).
+        ansible_template_syntaxes = {
+          ["[^/]*\\.sh\\.j2$"] = "sh",
+          ["[^/]*\\.bash\\.j2$"] = "bash",
+          ["[^/]*\\.zsh\\.j2$"] = "zsh",
+          ["[^/]*\\.py\\.j2$"] = "python",
+          ["[^/]*\\.ya?ml\\.j2$"] = "yaml",
+          ["[^/]*\\.json\\.j2$"] = "json",
+          ["[^/]*\\.toml\\.j2$"] = "toml",
+          ["[^/]*\\.ini\\.j2$"] = "dosini",
+          ["[^/]*tmux\\.conf\\.j2$"] = "tmux",
+          ["[^/]*\\.(service|timer)\\.j2$"] = "systemd",
+          ["[^/]*\\.md\\.j2$"] = "markdown",
+          ["[^/]*\\.html\\.j2$"] = "html",
+          ["[^/]*\\.lua\\.j2$"] = "lua",
+          ["[^/]*\\.ps1\\.j2$"] = "ps1",
+          ["Dockerfile[^/]*\\.j2$"] = "dockerfile",
+        },
       },
     },
-    -- Mappings can be configured through AstroCore as well.
-    -- NOTE: keycodes follow the casing in the vimdocs. For example, `<Leader>` must be capitalized
     mappings = {
-      -- first key is the mode
       n = {
-        -- second key is the lefthand side of the map
-
-        -- navigate buffer tabs
         ["]b"] = { function() require("astrocore.buffer").nav(vim.v.count1) end, desc = "Next buffer" },
         ["[b"] = { function() require("astrocore.buffer").nav(-vim.v.count1) end, desc = "Previous buffer" },
-
-        -- mappings seen under group name "Buffer"
         ["<Leader>bd"] = {
           function()
             require("astroui.status.heirline").buffer_picker(
@@ -72,13 +65,6 @@ return {
           end,
           desc = "Close buffer from tabline",
         },
-
-        -- tables with just a `desc` key will be registered with which-key if it's installed
-        -- this is useful for naming menus
-        -- ["<Leader>b"] = { desc = "Buffers" },
-
-        -- setting a mapping to false will disable it
-        -- ["<C-S>"] = false,
       },
     },
   },
