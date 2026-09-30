@@ -33,8 +33,10 @@ jobs:
       - name: Config en place
         run: mkdir -p ~/.config && ln -s "$GITHUB_WORKSPACE" ~/.config/nvim
 
-      - name: Plugins du lazy-lock.json
-        run: nvim --headless "+Lazy! restore" +qa
+      # Synchrone : un nvim qui quitte pendant une installation en
+      # arrière-plan fait échouer le suivant (dossiers à moitié écrits).
+      - name: Plugins du lazy-lock.json, parsers, outils Mason
+        run: nvim --headless -S scripts/install.lua
 
       - name: Test de démarrage
         run: nvim --headless -S scripts/smoke-test.lua

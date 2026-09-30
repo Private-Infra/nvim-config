@@ -6,6 +6,15 @@ local coffre = vim.env.OBSIDIAN_VAULT and vim.fn.expand(vim.env.OBSIDIAN_VAULT)
 
 ---@type LazySpec
 return {
+  -- CLI tree-sitter : nvim-treesitter compile ses parsers avec. Installé
+  -- aussi par ansible-home sur Linux (cli_tools) ; Mason le fournit ailleurs.
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    optional = true,
+    opts = function(_, opts)
+      opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, { "tree-sitter-cli" })
+    end,
+  },
   {
     "obsidian-nvim/obsidian.nvim",
     cond = coffre ~= nil and vim.fn.isdirectory(coffre) == 1,

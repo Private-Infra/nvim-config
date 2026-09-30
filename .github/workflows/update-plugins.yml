@@ -34,6 +34,9 @@ jobs:
       - name: Mettre à jour les plugins
         run: nvim --headless "+Lazy! update" +qa
 
+      - name: Parsers et outils Mason des nouvelles versions
+        run: nvim --headless -S scripts/install.lua
+
       - name: Test de démarrage avec les nouvelles versions
         run: nvim --headless -S scripts/smoke-test.lua
 
