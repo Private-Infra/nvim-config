@@ -1,13 +1,13 @@
 -- Apparence (`:h astroui`).
 --
 -- Le thème suit celui du terminal : `theme dark|light` (rôle theme_switcher
--- d'ansible-home) écrit ~/.config/theme/nvim-colorscheme. Relu au démarrage
--- ici, et au retour du focus dans polish.lua.
+-- d'ansible-home) écrit ~/.config/theme/current. Relu au démarrage ici, et
+-- au retour du focus dans polish.lua.
 
 local M = {}
 
 function M.mode_theme()
-  local f = io.open(vim.fn.expand "~/.config/theme/nvim-colorscheme")
+  local f = io.open(vim.fn.expand "~/.config/theme/current")
   if not f then return "dark" end
   local mode = f:read "*l"
   f:close()
