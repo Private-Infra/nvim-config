@@ -1,8 +1,9 @@
 -- Installation synchrone de tout ce que la config télécharge :
 --   nvim --headless -S scripts/install.lua
--- 1. plugins au commit du lazy-lock.json ;
+-- 1. plugins au commit du lazy-lock.json, ceux retirés de la config effacés ;
 -- 2. parsers Treesitter de la config (compilés, il faut tree-sitter et cc) ;
--- 3. outils Mason des packs (LSP, formateurs, linters).
+-- 3. outils Mason des packs (LSP, formateurs, linters), installés puis mis à
+--    jour : le lockfile ne les fige pas, ils suivent le registre Mason.
 --
 -- Chaque étape attend la fin de la précédente. Un nvim headless qui quitte
 -- pendant une installation en arrière-plan laisse des dossiers à moitié
@@ -20,6 +21,7 @@ end
 local ok = true
 
 ok = etape("Plugins (lazy-lock.json)", function() vim.cmd "Lazy! restore" end) and ok
+ok = etape("Plugins retirés de la config", function() vim.cmd "Lazy! clean" end) and ok
 
 ok = etape("Parsers Treesitter", function()
   if vim.fn.executable "tree-sitter" ~= 1 then
@@ -34,5 +36,6 @@ ok = etape("Parsers Treesitter", function()
 end) and ok
 
 ok = etape("Outils Mason", function() vim.cmd "MasonToolsInstallSync" end) and ok
+ok = etape("Mise à jour des outils Mason", function() vim.cmd "MasonToolsUpdateSync" end) and ok
 
 vim.cmd(ok and "qa!" or "cquit 1")
