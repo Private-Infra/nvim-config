@@ -1,8 +1,8 @@
 -- Test de démarrage : la config se charge et ouvre les types de fichiers de
 -- la stack sans erreur. Lancé par la CI (et à la main) :
 --   nvim --headless -S scripts/smoke-test.lua
--- Code de sortie 1 si un message d'erreur apparaît ou si un type attendu
--- n'est pas reconnu.
+-- Code de sortie 1 si un message d'erreur apparaît, si un type attendu
+-- n'est pas reconnu ou si les images du Markdown sont coupées.
 
 local attendus = {
   ["roles/web/tasks/main.yml"] = "ansible",
@@ -27,6 +27,12 @@ vim.defer_fn(function()
     if vim.bo.filetype ~= attendu then
       table.insert(erreurs, ("%s : type %q, attendu %q"):format(chemin, vim.bo.filetype, attendu))
     end
+  end
+  -- Réglage à garder : AstroNvim coupe les images du Markdown par défaut.
+  local snacks = require("lazy.core.config").spec.plugins["snacks.nvim"]
+  local image = snacks and require("lazy.core.plugin").values(snacks, "opts", false).image or {}
+  if not (image.doc and image.doc.enabled) then
+    table.insert(erreurs, "snacks : image.doc désactivé, Mermaid et formules ne s'affichent pas dans le Markdown")
   end
   local messages = vim.api.nvim_exec2("messages", { output = true }).output
   for ligne in messages:gmatch "[^\n]+" do

@@ -15,6 +15,14 @@ return {
       opts.ensure_installed = require("astrocore").list_insert_unique(opts.ensure_installed, { "tree-sitter-cli" })
     end,
   },
+  -- Images dans le Markdown (diagrammes Mermaid, formules, images liées) :
+  -- AstroNvim coupe image.doc. Affichées sous Ghostty (Mac), avec les outils
+  -- de rendu posés par ansible-home (mac/homebrew) ; sans effet sous Windows
+  -- Terminal, qui n'a pas le protocole d'images de kitty.
+  {
+    "folke/snacks.nvim",
+    opts = function(_, opts) opts.image = vim.tbl_deep_extend("force", opts.image or {}, { doc = { enabled = true } }) end,
+  },
   {
     "obsidian-nvim/obsidian.nvim",
     cond = coffre ~= nil and vim.fn.isdirectory(coffre) == 1,
