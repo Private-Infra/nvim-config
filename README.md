@@ -29,8 +29,10 @@ déployée dans `~/.config/nvim` sur les postes par ansible-home (rôle
   les postes l'appliquent au déploiement suivant (`Lazy restore`).
   Ne pas lancer `:Lazy update` sur un poste : le déploiement remet le
   lockfile du dépôt.
-- **Config** : chaque déploiement fait un fast-forward de `~/.config/nvim`,
-  sauf si la copie a des modifications locales ou des commits non poussés.
+- **Config** : chaque déploiement ramène `~/.config/nvim` sur `main`. Le
+  travail local n'est pas perdu : modifications et fichiers ajoutés partent
+  dans un stash, commits non poussés dans une branche `sauvegarde/<date>`.
+  Pour faire évoluer la config : une branche et une PR ici.
 - **Neovim** : version épinglée dans ansible-home (`astro_nvim_neovim_version`,
   suivie par Renovate) ; `NVIM_VERSION` des workflows s'aligne dessus.
 
