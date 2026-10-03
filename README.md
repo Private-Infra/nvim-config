@@ -19,8 +19,10 @@ déployée dans `~/.config/nvim` sur les postes par ansible-home (rôle
 - **Thème** : clair ou sombre selon `theme dark|light` du terminal, relu au
   retour du focus.
 - **Presse-papier** par OSC 52 sous WSL et en SSH.
-- **Obsidian** : `obsidian.nvim` sur le coffre de `OBSIDIAN_VAULT`, défini
-  par ansible-home (`obsidian_vault_path`) sur les postes WSL et le Mac.
+- **Obsidian** : `obsidian.nvim`, un espace de travail par dossier de
+  `OBSIDIAN_VAULT` (séparés par « : »), défini par ansible-home (rôle
+  `obsidian_cli`) sur les postes WSL et le Mac : la racine Google Drive avant
+  la bascule des coffres en git, puis le clone de chacun.
 
 ## Mises à jour
 

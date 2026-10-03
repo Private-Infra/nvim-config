@@ -27,5 +27,5 @@ return {
   -- Intégrations
   { import = "astrocommunity.ai.claudecode-nvim" }, -- <Leader>A : Claude Code dans nvim
   { import = "astrocommunity.terminal-integration.vim-tmux-navigator" }, -- Ctrl+hjkl entre nvim et tmux
-  { import = "astrocommunity.note-taking.obsidian-nvim" }, -- activé si OBSIDIAN_VAULT existe (plugins/user.lua)
+  { import = "astrocommunity.note-taking.obsidian-nvim" }, -- activé si un dossier d'OBSIDIAN_VAULT existe (plugins/user.lua)
 }
