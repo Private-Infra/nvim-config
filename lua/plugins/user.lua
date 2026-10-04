@@ -6,7 +6,11 @@
 -- aucun, et obsidian.nvim ne se charge pas.
 local coffres = vim.tbl_filter(
   function(chemin) return vim.fn.isdirectory(chemin) == 1 end,
-  vim.tbl_map(vim.fn.expand, vim.split(vim.env.OBSIDIAN_VAULT or "", ":", { plain = true, trimempty = true }))
+  -- normalize : sans barre finale, le nom de l'espace et le motif de chargement restent justes
+  vim.tbl_map(
+    function(chemin) return vim.fs.normalize(vim.fn.expand(chemin)) end,
+    vim.split(vim.env.OBSIDIAN_VAULT or "", ":", { plain = true, trimempty = true })
+  )
 )
 
 ---@type LazySpec
