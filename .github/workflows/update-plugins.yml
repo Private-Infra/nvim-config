@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 env:
-  NVIM_VERSION: "0.12.5" # aligné sur astro_nvim_neovim_version (ansible-home)
+  NVIM_VERSION: "0.12.6" # aligné sur astro_nvim_neovim_version (ansible-home)
 
 jobs:
   update:
