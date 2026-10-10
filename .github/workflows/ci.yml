@@ -16,7 +16,7 @@ permissions:
 env:
   # Même version que les postes : astro_nvim_neovim_version, dans
   # ansible-home (roles/system/astro_nvim/defaults/main.yml).
-  NVIM_VERSION: "0.12.5"
+  NVIM_VERSION: "0.12.6"
 
 jobs:
   smoke:
